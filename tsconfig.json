@@ -12,7 +12,8 @@
     "sourceMap": true,
     "baseUrl": ".",
     "types": [
-      "@vueuse/core"
+      "@vueuse/core",
+      "unplugin-vue-macros/macros-global"
     ],
     "paths": {
       "@/*": ["src/*"]
@@ -36,6 +37,15 @@
     "node_modules"
   ],
   "vueCompilerOptions": {
-    "target": 2.7
+    "target": 2.7,
+    "plugins": [
+      "@vue-macros/volar/define-options",
+      "@vue-macros/volar/define-models",
+      "@vue-macros/volar/define-props",
+      "@vue-macros/volar/define-props-refs",
+      "@vue-macros/volar/short-vmodel",
+      "@vue-macros/volar/define-slots",
+      "@vue-macros/volar/jsx-directive"
+    ]
   }
 }
