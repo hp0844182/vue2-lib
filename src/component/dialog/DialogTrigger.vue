@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { inject, onMounted } from 'vue'
+import { inject, onMounted, useListeners } from 'vue'
 import { DIALOG_INJECTION_KEY } from './context'
 import {
   Primitive,
@@ -12,12 +12,13 @@ export interface DialogTriggerProps extends PrimitiveProps {}
 const props = withDefaults(defineProps<DialogTriggerProps>(), {
   as: 'button',
 })
-const context = inject(DIALOG_INJECTION_KEY)
+const { onOpenToggle, open, contentId, triggerElement } = inject(DIALOG_INJECTION_KEY) || {}
 const { primitiveElement, currentElement } = usePrimitiveElement()
-
 onMounted(() => {
-  context!.triggerElement = currentElement
+  if (triggerElement?.value)
+    triggerElement!.value = currentElement.value
 })
+const events = useListeners()
 </script>
 
 <template>
@@ -26,11 +27,13 @@ onMounted(() => {
     v-bind="props"
     :type="as === 'button' ? 'button' : undefined"
     aria-haspopup="dialog"
-    :aria-expanded="context?.open.value || false"
-    :aria-controls="context?.contentId"
-    :data-state="context?.open.value ? 'open' : 'closed'"
-    @click="context?.onOpenToggle"
+    :aria-expanded="open || false"
+    :aria-controls="contentId"
+    :data-state="open ? 'open' : 'closed'"
+    v-on="events"
+    @click="onOpenToggle"
   >
     <slot />
   </Primitive>
 </template>
+@/component/Primitive

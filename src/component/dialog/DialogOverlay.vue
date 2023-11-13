@@ -2,8 +2,8 @@
 import { inject, watch } from 'vue'
 import { DIALOG_INJECTION_KEY } from './context'
 import { Primitive, type PrimitiveProps } from '@/component/primitive'
-import { Presence } from '@/component/presence'
 import { useBodyScrollLock } from '@/shared'
+import { Presence } from '@/component/presence'
 
 export interface DialogOverlayProps extends PrimitiveProps {
   /**
@@ -12,29 +12,25 @@ export interface DialogOverlayProps extends PrimitiveProps {
    */
   forceMount?: boolean
 }
-
-defineProps<DialogOverlayProps>()
-const context = inject(DIALOG_INJECTION_KEY)
-
+withDefaults(defineProps<DialogOverlayProps>(), {
+  as: 'div',
+})
+const { open, modal } = inject(DIALOG_INJECTION_KEY)!
 const isLocked = useBodyScrollLock()
 watch(
-  () => context?.open.value,
+  () => open.value,
   n => (isLocked.value = n ?? false),
 )
 </script>
 
 <template>
-  <Presence :present="forceMount || context!.open.value">
-    <Primitive
-      v-bind="$attrs"
-      :as="as"
-      :as-child="asChild"
-      :data-state="context?.open.value ? 'open' : 'closed'"
-      style="pointer-events: auto"
-      data-aria-hidden="true"
-      aria-hidden="true"
-    >
-      <slot />
-    </Primitive>
-  </Presence>
+  <Primitive
+    v-if="open"
+    v-bind="$attrs"
+    :as="as"
+    :as-child="asChild" :data-state="open ? 'open' : 'closed'" style="pointer-events: auto"
+    data-aria-hidden="true" aria-hidden="true"
+  >
+    <slot />
+  </Primitive>
 </template>

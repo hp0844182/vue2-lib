@@ -9,6 +9,10 @@ const props = withDefaults(defineProps<DialogCloseProps>(), {
 })
 
 const context = inject(DIALOG_INJECTION_KEY)
+
+function handleClick() {
+  context?.onOpenChange(false)
+}
 </script>
 
 <template>
@@ -16,8 +20,9 @@ const context = inject(DIALOG_INJECTION_KEY)
     v-bind="props"
     :type="as === 'button' ? 'button' : undefined"
     aria-label="Close"
-    @click="context?.onOpenChange(false)"
+    @click="handleClick"
   >
     <slot />
   </Primitive>
 </template>
+@/component/Primitive

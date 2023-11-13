@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { provide, ref, toRefs } from 'vue'
-import { useVModel } from '@vueuse/core'
+import { provide, ref, toRefs, watch } from 'vue'
+import { Fragment } from 'vue-frag'
 import type { DialogProvideValue } from './context'
 import { DIALOG_INJECTION_KEY } from './context'
-import { useId } from '@/shared'
+import { useId, useVModel } from '@/shared'
 
 export interface DialogRootProps {
   open?: boolean
@@ -25,14 +25,12 @@ const emit = defineEmits<DialogRootEmits>()
 
 const open = useVModel(props, 'open', emit as any, {
   defaultValue: props.defaultOpen,
-  passive: true,
 })
-
 const triggerElement = ref<HTMLElement>()
 const contentElement = ref<HTMLElement>()
 const { modal } = toRefs(props)
 provide<DialogProvideValue>(DIALOG_INJECTION_KEY, {
-  open,
+  open: open as any,
   modal,
   openModal: () => {
     open.value = true
@@ -52,5 +50,7 @@ provide<DialogProvideValue>(DIALOG_INJECTION_KEY, {
 </script>
 
 <template>
-  <slot />
+  <Fragment>
+    <slot />
+  </Fragment>
 </template>

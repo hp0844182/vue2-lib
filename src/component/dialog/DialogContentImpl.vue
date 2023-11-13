@@ -5,9 +5,7 @@ import {
   DismissableLayer,
   type DismissableLayerEmits,
   type DismissableLayerProps,
-} from '@/DismissableLayer'
-import { FocusScope } from '@/FocusScope'
-import { getOpenState } from '@/Menu/utils'
+} from '@/component/dismissable-layer'
 
 export interface DialogContentImplProps extends DismissableLayerProps {
   /**
@@ -28,45 +26,39 @@ export type DialogContentImplEmits = DismissableLayerEmits & {
    * Event handler called when auto-focusing on open.
    * Can be prevented.
    */
-  'openAutoFocus': [event: Event]
+  (e: 'openAutoFocus', event: Event): void
   /**
    * Event handler called when auto-focusing on close.
    * Can be prevented.
    */
-  'closeAutoFocus': [ event: Event]
+  (e: 'closeAutoFocus', event: Event): void
 }
 
 const props = defineProps<DialogContentImplProps>()
 const emits = defineEmits<DialogContentImplEmits>()
 
-const context = inject(DIALOG_INJECTION_KEY)
+const { contentId, descriptionId, titleId, open, onOpenChange } = inject(DIALOG_INJECTION_KEY)!
 </script>
 
 <template>
-  <FocusScope
-    as-child
-    loop
-    :trapped="props.trapFocus"
-    @mount-auto-focus="emits('openAutoFocus', $event)"
-    @unmount-auto-focus="emits('closeAutoFocus', $event)"
+  <DismissableLayer
+    v-bind="$attrs"
+    :id="contentId"
+    :as="as"
+    :as-child="asChild"
+    :disable-outside-pointer-events="disableOutsidePointerEvents"
+    role="dialog"
+    :aria-describedby="descriptionId"
+    :aria-labelledby="titleId"
+    :data-state="open ? 'open' : 'close'"
+    @dismiss="() => {
+      onOpenChange(false)
+    }"
+    @escape-key-down="emits('escapeKeyDown', $event)"
+    @focus-outside="emits('focusOutside', $event)"
+    @interact-outside="emits('interactOutside', $event)"
+    @pointer-down-outside="emits('pointerDownOutside', $event)"
   >
-    <DismissableLayer
-      v-bind="$attrs"
-      :id="context!.contentId"
-      :as="as"
-      :as-child="asChild"
-      :disable-outside-pointer-events="disableOutsidePointerEvents"
-      role="dialog"
-      :aria-describedby="context!.descriptionId"
-      :aria-labelledby="context!.titleId"
-      :data-state="getOpenState(context!.open.value)"
-      @dismiss="context?.onOpenChange(false)"
-      @escape-key-down="emits('escapeKeyDown', $event)"
-      @focus-outside="emits('focusOutside', $event)"
-      @interact-outside="emits('interactOutside', $event)"
-      @pointer-down-outside="emits('pointerDownOutside', $event)"
-    >
-      <slot />
-    </DismissableLayer>
-  </FocusScope>
+    <slot />
+  </DismissableLayer>
 </template>

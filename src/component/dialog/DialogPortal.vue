@@ -1,8 +1,10 @@
 <script setup lang="ts">
+import { useMounted } from '@vueuse/core'
+import { watch } from 'vue'
 import { Teleport } from '@/component/teleport'
 
 export interface DialogPortalProps {
-  to: string
+  to?: string
   disabled?: boolean
 }
 const props = defineProps<DialogPortalProps>()

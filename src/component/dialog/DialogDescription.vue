@@ -14,3 +14,4 @@ const context = inject(DIALOG_INJECTION_KEY)
     <slot />
   </Primitive>
 </template>
+@/component/Primitive

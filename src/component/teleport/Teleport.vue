@@ -4,7 +4,8 @@ export default {
   props: {
     to: {
       type: String,
-      required: true,
+      required: false,
+      default: 'body',
     },
     where: {
       type: String,
@@ -45,7 +46,6 @@ export default {
   mounted() {
     // Store a reference to the nodes
     this.nodes = Array.from(this.$el.childNodes)
-
     if (!this.disabled)
       this.bootObserver()
 
