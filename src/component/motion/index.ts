@@ -1,6 +1,6 @@
-import Presence from './presence.vue'
+import { Presence } from './Presence'
 
-export * from './motion'
+export * from './Motion'
 
 export {
   Presence,

@@ -1,10 +1,13 @@
 <script setup lang="ts">
 import { getCurrentInstance, inject, onUpdated, useListeners, watch } from 'vue'
-import type { Vue } from 'vue/types/vue'
+
+// import type { Vue } from 'vue/types/vue'
 import { Slot as SlotV } from './Slot'
+
 import type { PrimitiveProps } from './types'
 import { type PresenceState, presenceId } from '@/component/motion/context'
 
+type Vue = any
 defineOptions({
   name: 'VuePrimitive',
 })
@@ -15,8 +18,8 @@ withDefaults(defineProps<PrimitiveProps>(), {
 const { transition } = inject(presenceId, {}) as PresenceState
 const instance = getCurrentInstance()?.proxy as Vue
 watch(() => transition?.value, () => {
-  instance.$vnode.data!.transition = transition.value || instance.$vnode.data!.transition
-})
+  instance.$vnode.data!.transition = transition?.value || instance.$vnode.data!.transition
+}, { immediate: true })
 const lesteners = useListeners()
 </script>
 
